@@ -17,8 +17,8 @@ type LRUCache[T any] struct {
 	store   map[string]item[T]
 }
 
-// NewLRUCache initialize LRUCache object and returns pointer to it.
-func NewLRUCache[T any](maxSize int, ttl time.Duration) *LRUCache[T] {
+// New initialize LRUCache object and returns pointer to it.
+func New[T any](maxSize int, ttl time.Duration) *LRUCache[T] {
 	return &LRUCache[T]{
 		maxSize: maxSize,
 		lru:     newQueue[string](maxSize),

@@ -9,7 +9,7 @@ import (
 
 func TestStoreAndGet(t *testing.T) {
 	t.Run("Store value and get it", func(t *testing.T) {
-		cache := NewLRUCache[string](1, 1*time.Minute)
+		cache := New[string](1, 1*time.Minute)
 		key := "k1"
 		value := "val1"
 		cache.Set(key, value)
@@ -23,7 +23,7 @@ func TestStoreAndGet(t *testing.T) {
 	})
 
 	t.Run("Get value that does not exist", func(t *testing.T) {
-		cache := NewLRUCache[string](1, 1*time.Minute)
+		cache := New[string](1, 1*time.Minute)
 		key := "k1"
 		res, ok := cache.Get(key)
 		if ok {
@@ -35,7 +35,7 @@ func TestStoreAndGet(t *testing.T) {
 	})
 
 	t.Run("Overfil the cache size and try to get displaced value", func(t *testing.T) {
-		cache := NewLRUCache[string](1, 1*time.Minute)
+		cache := New[string](1, 1*time.Minute)
 		data := [][2]string{
 			{"k1", "val1"},
 			{"k2", "val2"},
@@ -62,7 +62,7 @@ func TestStoreAndGet(t *testing.T) {
 	})
 
 	t.Run("Remove item from cache", func(t *testing.T) {
-		cache := NewLRUCache[string](3, 1*time.Minute)
+		cache := New[string](3, 1*time.Minute)
 		data := [][2]string{
 			{"k1", "val1"},
 			{"k2", "val2"},
@@ -81,7 +81,7 @@ func TestStoreAndGet(t *testing.T) {
 	})
 
 	t.Run("Statistics calculation", func(t *testing.T) {
-		cache := NewLRUCache[string](10, 1*time.Minute)
+		cache := New[string](10, 1*time.Minute)
 		data := [][2]string{
 			{"k1", "val1"},
 			{"k2", "val2"},
@@ -139,7 +139,7 @@ func TestStoreAndGet(t *testing.T) {
 }
 
 func benchmarkCache(size, i int, b *testing.B) {
-		cache := NewLRUCache[string](size, 5*time.Second)
+		cache := New[string](size, 5*time.Second)
         data := make([][2]string, i)
         for j := 0; j < i; j++ {
             data[j][0] = fmt.Sprintf("k%d", j)
