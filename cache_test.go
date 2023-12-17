@@ -167,9 +167,9 @@ func benchmarkCache(size, i int, b *testing.B) {
         }
 }
 
-func BenchmarkCache1(b *testing.B)  { benchmarkCache(100, 100, b) }
-func BenchmarkCache2(b *testing.B)  { benchmarkCache(100, 200, b) }
-func BenchmarkCache3(b *testing.B)  { benchmarkCache(100, 300, b) }
-func BenchmarkCache10(b *testing.B) { benchmarkCache(100, 1000, b) }
-func BenchmarkCache20(b *testing.B) { benchmarkCache(100, 2000, b) }
-func BenchmarkCache40(b *testing.B) { benchmarkCache(100, 4000, b) }
+func BenchmarkCache100(b *testing.B)  { benchmarkCache(100, 100, b) }
+func BenchmarkCache200(b *testing.B)  { benchmarkCache(100, 200, b) }
+func BenchmarkCache300(b *testing.B)  { benchmarkCache(100, 300, b) }
+func BenchmarkCache1000(b *testing.B) { benchmarkCache(100, 1000, b) }
+func BenchmarkCache2000(b *testing.B) { benchmarkCache(100, 2000, b) }
+func BenchmarkCache4000(b *testing.B) { benchmarkCache(100, 4000, b) }
