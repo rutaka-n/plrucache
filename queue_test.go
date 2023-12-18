@@ -7,14 +7,14 @@ import (
 
 func TestQueuePushPop(t *testing.T) {
 	t.Run("Pop from empty list", func(t *testing.T) {
-		queue := newQueue[string](5)
+		queue := newQueue(5)
 		_, ok := queue.Pop()
 		if ok {
 			t.Errorf("expected: %v, got %v", false, ok)
 		}
 	})
 	t.Run("Push and pop items", func(t *testing.T) {
-		queue := newQueue[string](5)
+		queue := newQueue(5)
 		items := []string{"k1", "k2", "k3", "k4"}
 		for _, k := range items {
 			queue.Push(k, time.Now())
@@ -30,14 +30,14 @@ func TestQueuePushPop(t *testing.T) {
 
 func TestQueueDelete(t *testing.T) {
 	t.Run("there is no elements", func(t *testing.T) {
-		queue := newQueue[string](5)
+		queue := newQueue(5)
 		ok := queue.Delete(0)
 		if ok {
 			t.Fatalf("expected: %v, got: %v", false, ok)
 		}
 	})
 	t.Run("delete head element", func(t *testing.T) {
-		queue := newQueue[string](5)
+		queue := newQueue(5)
 		headIdx := queue.Push("head", time.Now()) // become head and tail
 		_ = queue.Push("tail", time.Now())        // since it always pushes into the tail "tail" will be in the tail and "head" become head
 		ok := queue.Delete(headIdx)
@@ -59,7 +59,7 @@ func TestQueueDelete(t *testing.T) {
 
 	})
 	t.Run("delete tail element", func(t *testing.T) {
-		queue := newQueue[string](5)
+		queue := newQueue(5)
 		_ = queue.Push("head", time.Now())        // become head and tail
 		tailIdx := queue.Push("tail", time.Now()) // since it always pushes into the tail "tail" will be in the tail and "head" become head
 		ok := queue.Delete(tailIdx)
@@ -81,7 +81,7 @@ func TestQueueDelete(t *testing.T) {
 
 	})
 	t.Run("delete element in the middle", func(t *testing.T) {
-		queue := newQueue[string](5)
+		queue := newQueue(5)
 		_ = queue.Push("head", time.Now())
 		midIdx := queue.Push("mid", time.Now())
 		_ = queue.Push("tail", time.Now())

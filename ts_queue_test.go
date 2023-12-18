@@ -6,7 +6,7 @@ import (
 )
 
 func TestIsAnyExpired(t *testing.T) {
-	q := newTSQ[string](1)
+	q := newTSQ(1)
 	val := "val"
     now := time.Now()
 	q.Push(val, now.Add(10*time.Second))

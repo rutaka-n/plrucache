@@ -12,8 +12,8 @@ type LRUCache[T any] struct {
 	rwLock  sync.RWMutex
 	ttl     time.Duration
 	stat    Stat
-	tsQueue *tsQ[string]
-	lru     *staticQ[string]
+	tsQueue *tsQ
+	lru     *staticQ
 	store   map[string]item[T]
 }
 
@@ -21,12 +21,12 @@ type LRUCache[T any] struct {
 func New[T any](maxSize int, ttl time.Duration) *LRUCache[T] {
 	return &LRUCache[T]{
 		maxSize: maxSize,
-		lru:     newQueue[string](maxSize),
+		lru:     newQueue(maxSize),
 		store:   make(map[string]item[T], maxSize),
 		stat:    Stat{},
 		rwLock:  sync.RWMutex{},
 		ttl:     ttl,
-		tsQueue: newTSQ[string](maxSize),
+		tsQueue: newTSQ(maxSize),
 	}
 }
 
@@ -97,9 +97,9 @@ func (c *LRUCache[T]) Delete(key string) {
 // Reset drop all items from cache.
 func (c *LRUCache[T]) Reset() {
 	c.rwLock.Lock()
-	c.lru = newQueue[string](c.maxSize)
+	c.lru = newQueue(c.maxSize)
 	c.store = make(map[string]item[T], c.maxSize)
-	c.tsQueue = newTSQ[string](c.maxSize)
+	c.tsQueue = newTSQ(c.maxSize)
 	c.stat = Stat{}
 	c.rwLock.Unlock()
 }

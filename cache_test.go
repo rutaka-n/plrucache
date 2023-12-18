@@ -173,3 +173,27 @@ func BenchmarkCache300(b *testing.B)  { benchmarkCache(100, 300, b) }
 func BenchmarkCache1000(b *testing.B) { benchmarkCache(100, 1000, b) }
 func BenchmarkCache2000(b *testing.B) { benchmarkCache(100, 2000, b) }
 func BenchmarkCache4000(b *testing.B) { benchmarkCache(100, 4000, b) }
+
+func benchmarkCacheGet(size, i int, b *testing.B) {
+		cache := New[string](size, 5*time.Second)
+        data := make([][2]string, i)
+        for j := 0; j < i; j++ {
+            data[j][0] = fmt.Sprintf("k%d", j)
+            data[j][1] = fmt.Sprintf("v%d", j)
+            cache.Set(data[j][0], data[j][1])
+        }
+
+        b.ResetTimer()
+        for n := 0; n < b.N; n++ {
+            for j :=0; j < i; j++ {
+                _, _ = cache.Get(data[j][0])
+            }
+        }
+}
+
+func BenchmarkCacheGet100(b *testing.B)  { benchmarkCacheGet(100, 100, b) }
+func BenchmarkCacheGet200(b *testing.B)  { benchmarkCacheGet(100, 200, b) }
+func BenchmarkCacheGet300(b *testing.B)  { benchmarkCacheGet(100, 300, b) }
+func BenchmarkCacheGet1000(b *testing.B) { benchmarkCacheGet(100, 1000, b) }
+func BenchmarkCacheGet2000(b *testing.B) { benchmarkCacheGet(100, 2000, b) }
+func BenchmarkCacheGet4000(b *testing.B) { benchmarkCacheGet(100, 4000, b) }
