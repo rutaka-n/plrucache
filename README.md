@@ -30,7 +30,7 @@ type item struct {
 func main() {
 	cacheSize := 128
 	expirationTime := 300 * time.Second
-	cache := lru.New[item](cacheSize, expirationTime)
+	cache := lru.New[string, item](cacheSize, expirationTime)
 
 	key := "k1"
 	value := item{1, "hello, world"}

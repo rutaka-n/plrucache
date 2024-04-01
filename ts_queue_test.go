@@ -6,9 +6,9 @@ import (
 )
 
 func TestIsAnyExpired(t *testing.T) {
-	q := newTSQ(1)
+	q := newTSQ[string](1)
 	val := "val"
-    now := time.Now()
+	now := time.Now()
 	q.Push(val, now.Add(10*time.Second))
 	if got := q.IsAnyExpired(now); got {
 		t.Errorf("expected: %v, got: %v", false, got)

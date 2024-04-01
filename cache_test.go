@@ -1,15 +1,15 @@
 package plrucache
 
 import (
-    "sync"
-    "fmt"
+	"fmt"
+	"sync"
 	"testing"
 	"time"
 )
 
 func TestStoreAndGet(t *testing.T) {
 	t.Run("Store value and get it", func(t *testing.T) {
-		cache := New[string](1, 1*time.Minute)
+		cache := New[string, string](1, 1*time.Minute)
 		key := "k1"
 		value := "val1"
 		cache.Set(key, value)
@@ -23,7 +23,7 @@ func TestStoreAndGet(t *testing.T) {
 	})
 
 	t.Run("Get value that does not exist", func(t *testing.T) {
-		cache := New[string](1, 1*time.Minute)
+		cache := New[string, string](1, 1*time.Minute)
 		key := "k1"
 		res, ok := cache.Get(key)
 		if ok {
@@ -35,7 +35,7 @@ func TestStoreAndGet(t *testing.T) {
 	})
 
 	t.Run("Overfil the cache size and try to get displaced value", func(t *testing.T) {
-		cache := New[string](1, 1*time.Minute)
+		cache := New[string, string](1, 1*time.Minute)
 		data := [][2]string{
 			{"k1", "val1"},
 			{"k2", "val2"},
@@ -62,7 +62,7 @@ func TestStoreAndGet(t *testing.T) {
 	})
 
 	t.Run("Remove item from cache", func(t *testing.T) {
-		cache := New[string](3, 1*time.Minute)
+		cache := New[string, string](3, 1*time.Minute)
 		data := [][2]string{
 			{"k1", "val1"},
 			{"k2", "val2"},
@@ -81,7 +81,7 @@ func TestStoreAndGet(t *testing.T) {
 	})
 
 	t.Run("Statistics calculation", func(t *testing.T) {
-		cache := New[string](10, 1*time.Minute)
+		cache := New[string, string](10, 1*time.Minute)
 		data := [][2]string{
 			{"k1", "val1"},
 			{"k2", "val2"},
@@ -124,9 +124,9 @@ func TestStoreAndGet(t *testing.T) {
 		}
 
 		cache.Reset()
-        if cache.Len() != 0 {
-            t.Errorf("expected: %v, got: %v", 0, cache.Len())
-        }
+		if cache.Len() != 0 {
+			t.Errorf("expected: %v, got: %v", 0, cache.Len())
+		}
 
 		stat = cache.Stat()
 		if stat.Misses != 0 {
@@ -139,32 +139,32 @@ func TestStoreAndGet(t *testing.T) {
 }
 
 func benchmarkCache(size, i int, b *testing.B) {
-		cache := New[string](size, 5*time.Second)
-        data := make([][2]string, i)
-        for j := 0; j < i; j++ {
-            data[j][0] = fmt.Sprintf("k%d", j)
-            data[j][1] = fmt.Sprintf("v%d", j)
-        }
+	cache := New[string, string](size, 5*time.Second)
+	data := make([][2]string, i)
+	for j := 0; j < i; j++ {
+		data[j][0] = fmt.Sprintf("k%d", j)
+		data[j][1] = fmt.Sprintf("v%d", j)
+	}
 
-        b.ResetTimer()
-        for n := 0; n < b.N; n++ {
-            wg := sync.WaitGroup{}
-            wg.Add(i*2)
-            for j :=0; j < i; j++ {
-                idx := j
-                go func() {
-                    idx := idx
-                    cache.Set(data[idx][0], data[idx][1])
-                    wg.Done()
-                }()
-                go func() {
-                    idx := idx
-                    _, _ = cache.Get(data[idx][0])
-                    wg.Done()
-                }()
-            }
-            wg.Wait()
-        }
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		wg := sync.WaitGroup{}
+		wg.Add(i * 2)
+		for j := 0; j < i; j++ {
+			idx := j
+			go func() {
+				idx := idx
+				cache.Set(data[idx][0], data[idx][1])
+				wg.Done()
+			}()
+			go func() {
+				idx := idx
+				_, _ = cache.Get(data[idx][0])
+				wg.Done()
+			}()
+		}
+		wg.Wait()
+	}
 }
 
 func BenchmarkCache100(b *testing.B)  { benchmarkCache(100, 100, b) }
@@ -175,20 +175,20 @@ func BenchmarkCache2000(b *testing.B) { benchmarkCache(100, 2000, b) }
 func BenchmarkCache4000(b *testing.B) { benchmarkCache(100, 4000, b) }
 
 func benchmarkCacheGet(size, i int, b *testing.B) {
-		cache := New[string](size, 5*time.Second)
-        data := make([][2]string, i)
-        for j := 0; j < i; j++ {
-            data[j][0] = fmt.Sprintf("k%d", j)
-            data[j][1] = fmt.Sprintf("v%d", j)
-            cache.Set(data[j][0], data[j][1])
-        }
+	cache := New[string, string](size, 5*time.Second)
+	data := make([][2]string, i)
+	for j := 0; j < i; j++ {
+		data[j][0] = fmt.Sprintf("k%d", j)
+		data[j][1] = fmt.Sprintf("v%d", j)
+		cache.Set(data[j][0], data[j][1])
+	}
 
-        b.ResetTimer()
-        for n := 0; n < b.N; n++ {
-            for j :=0; j < i; j++ {
-                _, _ = cache.Get(data[j][0])
-            }
-        }
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		for j := 0; j < i; j++ {
+			_, _ = cache.Get(data[j][0])
+		}
+	}
 }
 
 func BenchmarkCacheGet100(b *testing.B)  { benchmarkCacheGet(100, 100, b) }
